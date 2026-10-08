@@ -32,9 +32,34 @@ SDK, unpacked so that `PiStorm3D/SDK` sits next to `code/`:
 
 The executable is `code/amigaos/objects/jk2sp`.
 
+## Changes to the original source
+
+This is a modified version of Raven Software's Jedi Outcast source release
+(https://github.com/jedis/jedioutcast). Changes made in 2026 by Serkan Dursun
+for the AmigaOS port:
+
+- new files in [code/amigaos](code/amigaos) (platform layer, build, tools)
+- in the original files, changes are inside `#ifdef __amigaos__` blocks, apart
+  from portability fixes (`#include` paths, byte order handling of the game data
+  formats, C++ fixes for GCC)
+- [code/jpeg-6/jidctfst.cpp](code/jpeg-6/jidctfst.cpp) added from the
+  Independent JPEG Group's libjpeg 6 (integer IDCT)
+
 ## License
 
-GNU General Public License version 2, see [LICENSE.txt](LICENSE.txt).
+Jedi Outcast source code copyright (C) 2002 Activision / Raven Software,
+released under the GNU General Public License version 2, see
+[LICENSE.txt](LICENSE.txt). The AmigaOS port is distributed under the same
+license.
+
+Parts not covered by the GPL, under their own licenses (see the notices in
+the files):
+
+- JPEG library: this software is based in part on the work of the Independent
+  JPEG Group
+- zlib, copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler
+- stb_sprintf by Sean Barrett and Jeff Roberts (public domain / MIT)
+
 Star Wars, Jedi Knight and Jedi Outcast are trademarks of Lucasfilm Ltd. This
 project is not affiliated with Lucasfilm, LucasArts, Disney, Activision or
 Raven Software.
