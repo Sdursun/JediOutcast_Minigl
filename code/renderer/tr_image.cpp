@@ -966,9 +966,6 @@ image_t *R_CreateImage( const char *name, const byte *pic, int width, int height
 					   qboolean mipmap, qboolean allowPicmip, qboolean allowTC, int glWrapClampMode
 					   )
 {
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_UPLOAD );
-#endif
 	image_t		*image;
 	qboolean	isLightmap = qfalse;
 
@@ -976,41 +973,6 @@ image_t *R_CreateImage( const char *name, const byte *pic, int width, int height
 		ri.Error (ERR_DROP, "R_CreateImage: \"%s\" is too long\n", name);
 	}
 
-#ifdef __amigaos__
-	// r_amigadump <image name>: write that image, as loaded (before picmip
-	// and upload), to dump.tga -- tells bad image data from bad drawing
-	{
-		static cvar_t *r_amigadump;
-
-		if (!r_amigadump)
-			r_amigadump = ri.Cvar_Get("r_amigadump", "", 0);
-		if (r_amigadump->string[0] && !Q_stricmp(r_amigadump->string, name))
-		{
-			int		size = width * height * 4 + 18;
-			byte	*tga = (byte *)ri.Malloc(size, TAG_TEMP_WORKSPACE, qfalse);
-			int		i;
-
-			memset(tga, 0, 18);
-			tga[2] = 2;		// uncompressed true colour
-			tga[12] = width & 255;
-			tga[13] = width >> 8;
-			tga[14] = height & 255;
-			tga[15] = height >> 8;
-			tga[16] = 32;
-			tga[17] = 0x20;	// top-left origin, like the loaded data
-			for (i = 0; i < width * height; i++)
-			{
-				tga[18 + i*4 + 0] = pic[i*4 + 2];
-				tga[18 + i*4 + 1] = pic[i*4 + 1];
-				tga[18 + i*4 + 2] = pic[i*4 + 0];
-				tga[18 + i*4 + 3] = pic[i*4 + 3];
-			}
-			ri.FS_WriteFile("dump.tga", tga, size);
-			ri.Free(tga);
-			ri.Printf(PRINT_ALL, "amiga: dumped %s (%dx%d) to dump.tga\n", name, width, height);
-		}
-	}
-#endif
 
 	if(glConfig.clampToEdgeAvailable && glWrapClampMode == GL_CLAMP) {
 		glWrapClampMode = GL_CLAMP_TO_EDGE;
@@ -1218,9 +1180,6 @@ typedef char TGAHeader_t_must_be_18_bytes[ sizeof(TGAHeader_t) == 18 ? 1 : -1 ];
 
 void LoadTGA ( const char *name, byte **pic, int *width, int *height)
 {
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_TGA );
-#endif
 	char sErrorString[1024];
 	bool bFormatErrors = false;
 

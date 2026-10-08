@@ -169,25 +169,6 @@ void Sys_PumpEvents( void );
 void Amiga_Trace( const char *msg );
 #define AMIGA_TRACE(msg)	Amiga_Trace(msg)
 
-// a stack word to watch: Sys_Print reports it at the first console line
-// after it changes (finding what overwrites a return address)
-extern volatile unsigned long *amiga_watchptr;
-extern unsigned long amiga_watchval;
-
-// Load profiling: total ms and calls per kind, printed and reset after
-// CL_InitCGame (engine only; nested timers overlap, e.g. FS inside JPG).
-enum { AMS_FSREAD, AMS_JPG, AMS_TGA, AMS_UPLOAD, AMS_SHADER, AMS_MODEL, AMS_SOUND, AMS_COUNT };
-extern int amiga_loadms[AMS_COUNT], amiga_loadcount[AMS_COUNT];
-#ifdef __cplusplus
-int Sys_Milliseconds( void );
-struct AmigaLoadTimer {
-	int start, kind;
-	AmigaLoadTimer( int k ) : start( Sys_Milliseconds() ), kind( k ) {}
-	~AmigaLoadTimer() { amiga_loadms[kind] += Sys_Milliseconds() - start; amiga_loadcount[kind]++; }
-};
-#define AMIGA_LOADTIMER(k)	AmigaLoadTimer amiga_loadtimer_( k )
-#endif
-
 #else	// !__amigaos__
 
 #define AMIGA_TRACE(msg)

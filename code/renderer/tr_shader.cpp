@@ -3065,9 +3065,6 @@ most world construction surfaces.
 ===============
 */
 shader_t *R_FindShader( const char *name, const int *lightmapIndex, const byte *styles, qboolean mipRawImage ) {
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_SHADER );
-#endif
 	char		strippedName[MAX_QPATH];
 	int			i, hash;
 	const char 	*shaderText;

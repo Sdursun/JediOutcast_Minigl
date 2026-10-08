@@ -190,9 +190,6 @@ void Decompress_JPG( const char *filename, byte *pJPGData, unsigned char **pic, 
 
 void LoadJPG( const char *filename, unsigned char **pic, int *width, int *height ) 
 {	
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_JPG );
-#endif
 	*pic = NULL;	
 	
 	fileHandle_t	h;

@@ -540,13 +540,6 @@ int G2API_InitGhoul2Model(CGhoul2Info_v &ghoul2, const char *fileName, int, qhan
 {
 	int				model = -1;
 
-#ifdef __amigaos__
-	// its return address was found overwritten (0.1.5): watch it
-	amiga_watchptr = (volatile unsigned long *)__builtin_frame_address(0) + 1;
-	amiga_watchval = *amiga_watchptr;
-	AMIGA_TRACE( va( "G2API_InitGhoul2Model: return address %08lx at %p", amiga_watchval, (void *)amiga_watchptr ) );
-#endif
-
 	G2ERROR(fileName&&fileName[0],"NULL filename");
 
 	if (!fileName||!fileName[0])
@@ -555,7 +548,6 @@ int G2API_InitGhoul2Model(CGhoul2Info_v &ghoul2, const char *fileName, int, qhan
 		return -1;
 	}
 
-	AMIGA_TRACE( va( "G2API_InitGhoul2Model: enter, %d models in the list", ghoul2.size() ) );
 	// find a free spot in the list
 	for (model=0; model< ghoul2.size(); model++)
 	{
@@ -565,17 +557,13 @@ int G2API_InitGhoul2Model(CGhoul2Info_v &ghoul2, const char *fileName, int, qhan
 			break;
 		}
 	}
-	AMIGA_TRACE( "G2API_InitGhoul2Model: free slot searched" );
 	if (model==ghoul2.size())
 	{
 		ghoul2.push_back(CGhoul2Info());
 	}
-	AMIGA_TRACE( "G2API_InitGhoul2Model: slot ready" );
 
-	AMIGA_TRACE( va( "G2API_InitGhoul2Model: %s", fileName ) );
 	strcpy(ghoul2[model].mFileName, fileName);
 	ghoul2[model].mModelindex = model;
-	AMIGA_TRACE( "G2API_InitGhoul2Model: G2_TestModelPointers" );
 	if (!G2_TestModelPointers(&ghoul2[model]))
 	{
 		ghoul2[model].mFileName[0]=0;
@@ -593,11 +581,6 @@ int G2API_InitGhoul2Model(CGhoul2Info_v &ghoul2, const char *fileName, int, qhan
 
 		ghoul2[model].mModelBoltLink = -1;
 	}
-	AMIGA_TRACE( "G2API_InitGhoul2Model: done" );
-#ifdef __amigaos__
-	AMIGA_TRACE( va( "G2API_InitGhoul2Model: index %d, returning to %08lx", ghoul2[model].mModelindex, *amiga_watchptr ) );
-	amiga_watchptr = 0;
-#endif
 	return ghoul2[model].mModelindex;
 }
 
@@ -1584,7 +1567,6 @@ bool G2_TestModelPointers(CGhoul2Info *ghlInfo) // returns true if the model is 
 	if (ghlInfo->mModelindex != -1)
 	{
 		ghlInfo->mModel = RE_RegisterModel(ghlInfo->mFileName);
-		AMIGA_TRACE( "G2_TestModelPointers: RE_RegisterModel done" );
 		ghlInfo->currentModel = R_GetModelByHandle(ghlInfo->mModel);
 		if (ghlInfo->currentModel)
 		{
@@ -1599,7 +1581,6 @@ bool G2_TestModelPointers(CGhoul2Info *ghlInfo) // returns true if the model is 
 				}
 				ghlInfo->currentModelSize=ghlInfo->currentModel->mdxm->ofsEnd;
 				ghlInfo->animModel =  R_GetModelByHandle(ghlInfo->currentModel->mdxm->animIndex);
-				AMIGA_TRACE( "G2_TestModelPointers: animModel" );
 				if (ghlInfo->animModel)
 				{
 					ghlInfo->aHeader =ghlInfo->animModel->mdxa;

@@ -1123,9 +1123,6 @@ a null buffer will just return the file length without loading
 */
 #include "../client/client.h"
 int FS_ReadFile( const char *qpath, void **buffer ) {
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_FSREAD );
-#endif
 	fileHandle_t	h;
 	byte*			buf;
 	int				len;

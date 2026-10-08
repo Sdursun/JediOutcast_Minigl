@@ -1410,12 +1410,3 @@ refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
 }
 
 
-#ifdef __amigaos__
-// For amiga_glimp.cpp, which is built without -malign-int and so must not
-// look into trGlobals_t itself: the last 3D view's origin and forward vector.
-void R_AmigaViewPosition( float *out )
-{
-	VectorCopy( tr.viewParms.or.origin, out );
-	VectorCopy( tr.viewParms.or.axis[0], out + 3 );
-}
-#endif

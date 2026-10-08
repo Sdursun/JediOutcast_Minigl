@@ -38,8 +38,6 @@ unsigned int amiga_drawMicros, amiga_drawCalls, amiga_drawIndexes;
 unsigned int amiga_soundMicros;
 
 static cvar_t *r_amigaspeeds;
-static cvar_t *r_amigafps;
-static cvar_t *r_amigashot;
 static cvar_t *r_mglbuffers;
 
 static int glctx;
@@ -188,8 +186,6 @@ void GLimp_Init(void)
 	ri.Printf(PRINT_ALL, "Initializing minigl.library display\n");
 
 	r_amigaspeeds = ri.Cvar_Get("r_amigaspeeds", "0", 0);
-	r_amigafps = ri.Cvar_Get("r_amigafps", "1", 0);
-	r_amigashot = ri.Cvar_Get("r_amigashot", "0", 0);
 
 	if (!R_GetModeInfo(&glConfig.vidWidth, &glConfig.vidHeight, &glConfig.windowAspect, r_mode->integer))
 	{
@@ -310,65 +306,9 @@ void GLimp_LogComment(char *comment)
 {
 }
 
-/* r_amigafps (default 1): frames per second, printed every 5 s -- the
-   game's cg_drawFPS needs a working font and a photo of the screen. */
-void R_AmigaViewPosition(float *out);
-
-static void FrameRateReport(void)
-{
-	static int frames, since;
-	int now = ri.Milliseconds();
-
-	if (!r_amigafps->integer)
-	{
-		frames = 0;
-		return;
-	}
-	if (!frames++)
-		since = now;
-	else if (now - since >= 5000)
-	{
-		int tenths = (frames - 1) * 10000 / (now - since);
-		float view[6];
-
-		/* and where the last 3D view was: origin and forward vector */
-		R_AmigaViewPosition(view);
-		ri.Printf(PRINT_ALL, "amiga: %d.%d fps, view at %.0f %.0f %.0f looking %.2f %.2f %.2f\n",
-			tenths / 10, tenths % 10, view[0], view[1], view[2], view[3], view[4], view[5]);
-		frames = 0;
-	}
-}
-
-/* r_amigashot N: a screenshot every N seconds (at most 12 per run), taken
-   from the finished back buffer before the swap. For bug reports without
-   a keyboard shortcut. */
-void R_TakeScreenshot(int x, int y, int width, int height, char *fileName);
-
-static void TimedScreenshot(void)
-{
-	static int next, count;
-	int now = ri.Milliseconds();
-	char name[64];
-
-	if (r_amigashot->integer <= 0 || count >= 12)
-		return;
-	if (!next)
-		next = now + r_amigashot->integer * 1000;
-	if (now < next)
-		return;
-
-	Com_sprintf(name, sizeof(name), "screenshots/amiga%02d.jpg", count++);
-	R_TakeScreenshot(0, 0, glConfig.vidWidth, glConfig.vidHeight, name);
-	ri.Printf(PRINT_ALL, "amiga: wrote %s\n", name);
-	next = now + r_amigashot->integer * 1000;
-}
-
 void GLimp_EndFrame(void)
 {
 	unsigned int start;
-
-	FrameRateReport();
-	TimedScreenshot();
 
 	if (!amiga_speeds)
 	{

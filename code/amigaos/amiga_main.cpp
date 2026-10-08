@@ -227,22 +227,9 @@ void Amiga_FlushConsole(void)
 	}
 }
 
-volatile unsigned long *amiga_watchptr;
-unsigned long amiga_watchval;
-
 void Sys_Print(const char *msg)
 {
 	int len;
-
-	if (amiga_watchptr && *amiga_watchptr != amiga_watchval)
-	{
-		char note[128];
-
-		snprintf(note, sizeof(note), "WATCH: %p changed from %08lx to %08lx before the next line\n",
-			(void *)amiga_watchptr, amiga_watchval, *amiga_watchptr);
-		amiga_watchval = *amiga_watchptr;
-		Sys_Print(note);
-	}
 
 	amiga_printcount++;
 
@@ -583,23 +570,6 @@ int main(int argc, char **argv)
 		char line[128];
 
 		snprintf(line, sizeof(line), "Jedi Outcast AmigaOS build %s\n", amiga_buildstring);
-		Sys_Print(line);
-	}
-
-	/* gcc merges sin+cos into cexpf, libnix's is broken (build 0.1.15):
-	   check AngleVectors here so every log shows whether the math is sane. */
-	{
-		volatile float yaw = 30.0f;
-		vec3_t angles, forward, right, up;
-		char line[128];
-		int len;
-
-		VectorSet(angles, 0, yaw, 0);
-		AngleVectors(angles, forward, right, up);
-		len = (int)(VectorLength(forward) * 1000.0f + 0.5f);
-		snprintf(line, sizeof(line), "mathcheck: forward %d %d %d /1000, length %d/1000 -> %s\n",
-			(int)(forward[0] * 1000.0f), (int)(forward[1] * 1000.0f), (int)(forward[2] * 1000.0f),
-			len, (len > 995 && len < 1005) ? "ok" : "BROKEN");
 		Sys_Print(line);
 	}
 

@@ -863,15 +863,6 @@ void CL_InitCGame( void ) {
 	t2 = Sys_Milliseconds();
 
 	Com_Printf( "CL_InitCGame: %5.2f seconds\n", (t2-t1)/1000.0 );
-#ifdef __amigaos__
-	Com_Printf( "loadtime ms (calls): fsread %d (%d) jpg %d (%d) tga %d (%d) upload %d (%d) shader %d (%d) model %d (%d) sound %d (%d)\n",
-		amiga_loadms[AMS_FSREAD], amiga_loadcount[AMS_FSREAD], amiga_loadms[AMS_JPG], amiga_loadcount[AMS_JPG],
-		amiga_loadms[AMS_TGA], amiga_loadcount[AMS_TGA], amiga_loadms[AMS_UPLOAD], amiga_loadcount[AMS_UPLOAD],
-		amiga_loadms[AMS_SHADER], amiga_loadcount[AMS_SHADER], amiga_loadms[AMS_MODEL], amiga_loadcount[AMS_MODEL],
-		amiga_loadms[AMS_SOUND], amiga_loadcount[AMS_SOUND] );
-	memset( amiga_loadms, 0, sizeof( amiga_loadms ) );
-	memset( amiga_loadcount, 0, sizeof( amiga_loadcount ) );
-#endif
 	// have the renderer touch all its images, so they are present
 	// on the card even if the driver does deferred loading
 	re.EndRegistration();
@@ -1124,7 +1115,3 @@ void CL_SetCGameTime( void ) {
 	}
 }
 
-
-#ifdef __amigaos__
-int amiga_loadms[AMS_COUNT], amiga_loadcount[AMS_COUNT];
-#endif

@@ -944,9 +944,6 @@ static qboolean S_LoadSound_Actual( sfx_t *sfx )
 //
 qboolean S_LoadSound( sfx_t *sfx )
 {
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_SOUND );
-#endif
 	gbInsideLoadSound = qtrue;	// !!!!!!!!!!!!!
 		
 		qboolean bReturn = S_LoadSound_Actual( sfx );

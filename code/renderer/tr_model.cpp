@@ -804,9 +804,6 @@ fail:
 qboolean gbInsideRegisterModel = qfalse;
 qhandle_t RE_RegisterModel( const char *name )
 {
-#ifdef __amigaos__
-	AMIGA_LOADTIMER( AMS_MODEL );
-#endif
 	gbInsideRegisterModel = qtrue;	// !!!!!!!!!!!!!!
 
 		qhandle_t q = RE_RegisterModel_Actual( name );
